@@ -1,0 +1,53 @@
+public static string PrintPairs(int x, int[] numbers)
+{
+	int medium = x / 2;			
+	List<int> equalOnes = new List<int>();
+	List<int> smallerOnes = new List<int>();
+	List<int> biggerOnes = new List<int>();
+
+	for (int i = 0; i < numbers.Length; i++)
+	{
+		if (numbers[i] == medium)
+			equalOnes.Add(numbers[i]);
+		else if (numbers[i] < medium)
+			smallerOnes.Add(numbers[i]);
+		else if (numbers[i] <= x)
+			biggerOnes.Add(numbers[i]);
+	}
+
+	var result = new StringBuilder();
+
+	if (medium * 2 != x)
+		smallerOnes.AddRange(equalOnes);
+	else if (equalOnes.Count >= 2)
+		for (int i = 0; i < equalOnes.Count / 2; i++)
+			result.Append(result.Length == 0 ? $"({medium}, {medium})" : $", ({medium}, {medium})");
+
+	smallerOnes.Sort();			
+
+	for (int b = 0; b < biggerOnes.Count; b++)
+	{
+		var big = biggerOnes[b];
+
+		for (int s = 0; s < smallerOnes.Count; s++)
+		{
+			int small = smallerOnes[s];
+			int sum = big + small;
+
+			if (sum > x)
+			{
+				break;
+			}
+			else if (sum == x)
+			{
+				result.Append(result.Length == 0 ? $"({small}, {big})" : $", ({small}, {big})");
+				biggerOnes.Remove(biggerOnes[b]);
+				smallerOnes.Remove(smallerOnes[s]);
+				b--;
+				break;
+			}					
+		}
+	}
+
+	return result.ToString();
+}

@@ -1,0 +1,31 @@
+using System.Collections.Generic;
+
+namespace MyQueue
+{
+	class MyQueue<T>
+	{
+		private Queue<T> queue;
+
+		public void Push(T item)
+		{
+			lock (queue)
+			{
+				queue.Enqueue(item);
+
+				System.Threading.Monitor.Pulse(queue);
+			}
+		}
+
+		public T Pop()
+		{
+			lock (queue)
+			{
+				while (queue.Count == 0)
+					System.Threading.Monitor.Wait(queue);
+
+				T _item = queue.Dequeue();
+				return _item;
+			}
+		}
+	}
+}
